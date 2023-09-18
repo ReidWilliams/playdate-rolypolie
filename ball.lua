@@ -6,12 +6,17 @@ local gfx <const> = playdate.graphics
 local vector2D <const> = playdate.geometry.vector2D
 
 local friction = 0.95
-local sensitivity = 2.0
+local sensitivity = 0.5
+
+-- how many pixels of on screen movement before showing next frame
+-- in animation
+local imageAnimationOffset = 5
 
 local sound = playdate.sound.sampleplayer.new("/sounds/beep.wav")
 local images = {
 	gfx.image.new("images/ball1.png"),
-	gfx.image.new("images/ball2.png")
+	gfx.image.new("images/ball2.png"),
+	gfx.image.new("images/ball3.png")
 }
 
 class('PlayerBall').extends(playdate.graphics.sprite)
@@ -26,6 +31,10 @@ function PlayerBall:init()
 	self.acceleration = vector2D.new(0, 0)
 
 	return self
+end
+
+function PlayerBall:setPosition(x, y)
+	self.position = vector2D.new(x, y)
 end
 
 function PlayerBall:setAcceleration(x, y)
@@ -50,5 +59,15 @@ function PlayerBall:update()
 	
 	self.position = np
 	self:moveTo(self.position.dx, self.position.dy)
+	self:updateImage()
 end
 
+function PlayerBall:updateImage()
+	local chunks = math.ceil(self.position.dx / imageAnimationOffset) - 1
+	local offset = (chunks % #images) + 1
+	
+	print("chunks: " .. chunks)
+	print("offset: " .. offset)
+	
+	self:setImage(images[offset])
+end

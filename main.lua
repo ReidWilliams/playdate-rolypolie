@@ -11,7 +11,7 @@ local gfx <const> = playdate.graphics
 playdate.startAccelerometer()
 
 local ball = PlayerBall()
-ball:moveTo(100, 100)
+ball:setPosition(100, 100)
 ball:add()
 
 -- Main game loop
@@ -23,7 +23,7 @@ end
 
 function updateWithAccelerometer()
     local ax, ay, az = playdate.readAccelerometer()
-    ball:setAcceleration(ax, ay)
+    ball:setAcceleration(ax, 0)
 end
 
 
