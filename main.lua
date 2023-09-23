@@ -23,7 +23,7 @@ end
 
 function updateWithAccelerometer()
     local ax, ay, az = playdate.readAccelerometer()
-    ball:setAcceleration(ax, 0)
+    ball:setAcceleration(ax, ay)
 end
 
 

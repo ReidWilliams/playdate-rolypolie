@@ -6,15 +6,17 @@ local gfx <const> = playdate.graphics
 local vector2D <const> = playdate.geometry.vector2D
 
 local friction = 0.95
--- local sensitivity = 0.5
-local sensitivity = 0.05
+local sensitivity = 0.5
 
--- how many pixels of on screen movement before showing next frame
--- in animation
+-- how many pixels of on screen movement before showing next frame in animation
 local imageAnimationOffset = 2
 
 local sound = playdate.sound.sampleplayer.new("/sounds/beep.wav")
 local images = gfx.imagetable.new("images/ball")
+-- in the sprite sheet, each col is an animation frame, each row is a set of animations for
+-- a rolling direction, e.g. rolling to the right, rolling down, etc.
+-- row 1 is rolling in the x direction, row 2 is rolling in the y direction
+local nAnimationFrames, _ = images:getSize()
 
 class('PlayerBall').extends(playdate.graphics.sprite)
 
@@ -60,8 +62,19 @@ function PlayerBall:update()
 end
 
 function PlayerBall:updateImage()
-	local chunks = math.ceil(self.position.dx / imageAnimationOffset) - 1
-	local offset = (chunks % #images) + 1
+	-- use horizontal or vertical animation
+	local animationSet, position = nil
 	
-	self:setImage(images:getImage(offset))
+	if math.abs(self.velocity.dx) > math.abs(self.velocity.dy) then
+		animationSet = 1
+		position = self.position.dx
+	else
+		animationSet = 2
+		position = self.position.dy
+	end
+	
+	local chunks = math.ceil(position / imageAnimationOffset) - 1
+	local animationFrame = (chunks % nAnimationFrames) + 1
+	
+	self:setImage(images:getImage(animationFrame, animationSet))
 end
