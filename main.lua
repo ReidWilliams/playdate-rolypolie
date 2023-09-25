@@ -4,13 +4,13 @@ import "CoreLibs/sprites"
 import "CoreLibs/timer"
 import "CoreLibs/crank"
 
-import "ball"
+import "player"
 
 local gfx <const> = playdate.graphics
 -- math.randomseed(2018)
 playdate.startAccelerometer()
 
-local ball = PlayerBall()
+local ball = Player()
 ball:setPosition(100, 100)
 ball:add()
 
