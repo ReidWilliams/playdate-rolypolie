@@ -40,8 +40,6 @@ function Player:init()
 		[VELOCITY] = vector2D.new(0, 0),
 		[ACCELERATION] = vector2D.new(0, 0)
 	}
-	
-	self:setImage(animations[self.mode]:getImage(self.state))
 
 	return self
 end
