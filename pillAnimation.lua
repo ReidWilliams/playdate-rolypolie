@@ -9,11 +9,14 @@ local vector2D <const> = playdate.geometry.vector2D
 -- how many pixels of on screen movement before showing next frame in animation
 local imageAnimationOffset = 2
 
-local images = gfx.imagetable.new("images/pill-horz")
--- in the sprite sheet, each col is an animation frame, each row is a set of animations for
--- a rolling direction, e.g. rolling to the right, rolling down, etc.
--- row 1 is rolling in the x direction, row 2 is rolling in the y direction
-local nAnimationFrames, _ = images:getSize()
+local images = {
+	[NORTH] = gfx.imagetable.new("images/pill-north"),
+	[EAST] = gfx.imagetable.new("images/pill-east"),
+	[SOUTH] = gfx.imagetable.new("images/pill-south"),
+	[WEST] = gfx.imagetable.new("images/pill-west"),
+}
+
+local nAnimationFrames, _ = images[UP]:getSize()
 
 class('PillAnimation').extends()
 
