@@ -15,8 +15,7 @@ local images = {
 	[SOUTH] = gfx.imagetable.new("images/pill-south"),
 	[WEST] = gfx.imagetable.new("images/pill-west"),
 }
-
-local nAnimationFrames, _ = images[UP]:getSize()
+local nAnimationFrames, _ = images[NORTH]:getSize()
 
 class('PillAnimation').extends()
 
