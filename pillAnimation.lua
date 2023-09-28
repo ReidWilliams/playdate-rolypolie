@@ -26,7 +26,6 @@ function PillAnimation:init()
 end
 
 function PillAnimation:getImage(state)
-	printTable(state[VELOCITY])
 	local direction = helpers.compassDirection(state[VELOCITY].x, state[VELOCITY].y)
 	-- use horizontal or vertical animation
 	local majorPosition = nil
