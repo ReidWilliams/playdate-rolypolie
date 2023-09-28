@@ -1,3 +1,14 @@
+
+
+
+
+
+-- TODO: transition animations in all 4 directions
+
+
+
+
+
 import "CoreLibs/object"
 import "CoreLibs/graphics"
 import "CoreLibs/sprites"

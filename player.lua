@@ -17,7 +17,7 @@ local TRANSITION = 3
 local friction = {
 	[BALL] = 0.95,
 	[PILL] = 0.75,
-	[TRANSITION] = 0.95
+	[TRANSITION] = 0.90
 }
 
 local sensitivity = {
@@ -56,9 +56,9 @@ function Player:setPosition(x, y)
 end
 
 function Player:updateInput(x, y, direction)	
-	if self.mode == BALL then
+	if self.mode == BALL or self.mode == TRANSITION then
 		self.state[ACCELERATION] = vector2D.new(x, y)
-	else -- PILL or TRANSITION
+	else -- PILL
 		if direction == nil then 
 			self.state[ACCELERATION] = vector2D.new(0, 0)
 		elseif direction == NORTHEAST or direction == EAST or direction == SOUTHEAST then
