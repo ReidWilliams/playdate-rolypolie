@@ -21,15 +21,39 @@ end
 
 -- Main game loop
 function playdate.update()
-    updateWithAccelerometer()
+    updateWithDirectionalInputs()
     player:update()
     playdate.timer.updateTimers()
     playdate.graphics.sprite.update()
 end
 
-function updateWithAccelerometer()
+function updateWithDirectionalInputs()
     local ax, ay, az = playdate.readAccelerometer()
-    player:setAcceleration(ax, ay)
+    
+    local dPadDirection = nil
+    if playdate.buttonIsPressed(playdate.kButtonUp) then
+        if playdate.buttonIsPressed(playdate.kButtonRight) then
+            dPadDirection = NORTHEAST
+        elseif playdate.buttonIsPressed(playdate.kButtonLeft) then
+            dPadDirection = NORTHWEST
+        else
+            dPadDirection = NORTH
+        end
+    elseif playdate.buttonIsPressed(playdate.kButtonDown) then
+        if playdate.buttonIsPressed(playdate.kButtonRight) then
+            dPadDirection = SOUTHEAST
+        elseif playdate.buttonIsPressed(playdate.kButtonLeft) then
+            dPadDirection = SOUTHWEST
+        else
+            dPadDirection = SOUTH
+        end
+    elseif playdate.buttonIsPressed(playdate.kButtonRight) then
+        dPadDirection = EAST
+    elseif playdate.buttonIsPressed(playdate.kButtonLeft) then
+        dPadDirection = WEST
+    end
+    
+    player:updateInput(ax, ay, dPadDirection)
 end
 
 

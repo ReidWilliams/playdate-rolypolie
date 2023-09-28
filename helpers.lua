@@ -9,13 +9,13 @@ end
 -- given x and y components of a vector, return the constant
 -- for the direction it mostly points (north, east, etc)
 function helpers.compassDirection(x, y)
-	if -y > x then
-		return NORTH
-	elseif x > y then
-		return EAST
-	elseif y > x then
-		return SOUTH
+	if math.abs(x) > math.abs(y) then
+		if x > 0 then return EAST else return WEST end
 	else
-		return WEST
+		if y > 0 then return SOUTH else return NORTH end
 	end
+end
+
+function helpers.nonZero(v)
+	return v.dx ~= 0 or v.dy ~= 0
 end

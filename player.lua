@@ -14,10 +14,17 @@ local BALL = 1
 local PILL = 2
 local TRANSITION = 3
 
-local friction = 0.95
-local sensitivity = 0.5
--- how many pixels of on screen movement before showing next frame in animation
-local imageAnimationOffset = 2
+local friction = {
+	[BALL] = 0.95,
+	[PILL] = 0.75,
+	[TRANSITION] = 0.95
+}
+
+local sensitivity = {
+	[BALL] = 0.5,
+	[PILL] = 0.5,
+	[TRANSITION] = 0.5
+}
 
 local animations = {
 	[BALL] = BallAnimation(),
@@ -37,10 +44,10 @@ function Player:init()
 	
 	self.state = {
 		[POSITION] = vector2D.new(0, 0),
-		[VELOCITY] = vector2D.new(0, 0),
+		[VELOCITY] = vector2D.new(0.01, 0),
 		[ACCELERATION] = vector2D.new(0, 0)
 	}
-
+	
 	return self
 end
 
@@ -48,8 +55,22 @@ function Player:setPosition(x, y)
 	self.state[POSITION] = vector2D.new(x, y)
 end
 
-function Player:setAcceleration(x, y)
-	self.state[ACCELERATION] = vector2D.new(x, y)
+function Player:updateInput(x, y, direction)	
+	if self.mode == BALL then
+		self.state[ACCELERATION] = vector2D.new(x, y)
+	else -- PILL or TRANSITION
+		if direction == nil then 
+			self.state[ACCELERATION] = vector2D.new(0, 0)
+		elseif direction == NORTHEAST or direction == EAST or direction == SOUTHEAST then
+			self.state[ACCELERATION] = vector2D.new(1, 0)
+		elseif direction == NORTHWEST or direction == WEST or direction == SOUTHWEST then
+			self.state[ACCELERATION] = vector2D.new(-1, 0)
+		elseif direction == NORTH then
+			self.state[ACCELERATION] = vector2D.new(0, -1)
+		else
+			self.state[ACCELERATION] = vector2D.new(0, 1)
+		end
+	end		
 end
 
 function Player:toggleMode()
@@ -67,26 +88,9 @@ function Player:toggleMode()
 end
 
 function Player:update()
-	if self.mode == BALL then 
-		self:updateAsBall()
-	end
+	self.state[VELOCITY] = (self.state[VELOCITY] + (self.state[ACCELERATION] * sensitivity[self.mode])) * friction[self.mode]
+	local np = self.state[POSITION] + self.state[VELOCITY]
 	
-	if self.mode == PILL then 
-		self:updateAsPill() 
-	end
-	
-	if self.mode == TRANSITION then
-		self:updateAsTransition()
-	end
-	
-	self:moveTo(self.state[POSITION].dx, self.state[POSITION].dy)
-	self:setImage(animations[self.mode]:getImage(self.state))
-end
-
-function Player:updateAsBall()
-	self.state[VELOCITY] = (self.state[VELOCITY] + (self.state[ACCELERATION] * sensitivity)) * friction
-	local np = self.state[POSITION] + self.state[VELOCITY] -- new position
-	  
 	if np.dx > 400 or np.dx < 0 then
 		self.state[VELOCITY].dx = -self.state[VELOCITY].dx
 		sound:play(1)
@@ -100,15 +104,20 @@ function Player:updateAsBall()
 	np.dy = helpers.clip(np.dy, 0, 240)
 	
 	self.state[POSITION] = np
-end
-
-function Player:updateAsPill()
-	self:updateAsBall()
-end
-
-function Player:updateAsTransition()
-	self:updateAsBall()
+	 -- new position
 	
+	if self.mode == TRANSITION then
+		self:updateAsTransition()
+	end
+	
+	self:moveTo(self.state[POSITION].dx, self.state[POSITION].dy)
+	
+	if helpers.nonZero(self.state[VELOCITY]) then
+		self:setImage(animations[self.mode]:getImage(self.state))
+	end
+end
+
+function Player:updateAsTransition()	
 	if animations[TRANSITION]:isDone() then
 		self.mode = self.nextMode
 	end
