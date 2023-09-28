@@ -49,8 +49,7 @@ function Player:setPosition(x, y)
 end
 
 function Player:setAcceleration(x, y)
-	-- FIXME FIXME FIXME, forcing y to 0
-	self.state[ACCELERATION] = vector2D.new(x, 0)
+	self.state[ACCELERATION] = vector2D.new(x, y)
 end
 
 function Player:toggleMode()

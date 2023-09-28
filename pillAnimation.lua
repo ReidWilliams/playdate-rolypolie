@@ -2,6 +2,7 @@ import "CoreLibs/sprites"
 import "CoreLibs/object"
 
 import "constants"
+import "helpers"
 
 local gfx <const> = playdate.graphics
 local vector2D <const> = playdate.geometry.vector2D
@@ -25,22 +26,18 @@ function PillAnimation:init()
 end
 
 function PillAnimation:getImage(state)
+	local direction = helpers.compassDirection(state[VELOCITY].x, state[VELOCITY].y)
 	-- use horizontal or vertical animation
-	local animationSet, position = nil
+	local majorPosition = nil
 	
-	if math.abs(state[VELOCITY].dx) > math.abs(state[VELOCITY].dy) then
-		animationSet = 1
-		position = state[POSITION].dx
+	if direction == EAST or direction == WEST then
+		majorPosition = state[POSITION].dx
 	else
-		animationSet = 2
-		position = state[POSITION].dy
+		majorPosition = state[POSITION].dy
 	end
 	
-	local chunks = math.ceil(position / imageAnimationOffset) - 1
+	local chunks = math.ceil(majorPosition / imageAnimationOffset) - 1
 	local animationFrame = (chunks % nAnimationFrames) + 1
-	
-	-- FIXME FIXME FIXME FIXME FIXME
-	animationSet = 1
-	
-	return images:getImage(animationFrame, animationSet)
+		
+	return images[direction]:getImage(animationFrame)
 end

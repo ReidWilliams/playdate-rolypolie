@@ -9,11 +9,13 @@ end
 -- given x and y components of a vector, return the constant
 -- for the direction it mostly points (north, east, etc)
 function helpers.compassDirection(x, y)
-	if math.abs(x) > math.abs(y) then
-		
+	if -y > x then
+		return NORTH
+	elseif x > y then
+		return EAST
+	elseif y > x then
+		return SOUTH
 	else
-		animationSet = 2
-		position = state[POSITION].dy
+		return WEST
 	end
-	
 end

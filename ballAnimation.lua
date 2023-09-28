@@ -2,6 +2,7 @@ import "CoreLibs/sprites"
 import "CoreLibs/object"
 
 import "constants"
+import "helpers"
 
 local gfx <const> = playdate.graphics
 local vector2D <const> = playdate.geometry.vector2D
@@ -23,18 +24,18 @@ function BallAnimation:init()
 end
 
 function BallAnimation:getImage(state)
-	-- use horizontal or vertical animation
-	local animationSet, position = nil
+	local direction = helpers.compassDirection(state[VELOCITY].x, state[VELOCITY].y)
+	local animationSet, majorPosition = nil
 	
-	if math.abs(state[VELOCITY].dx) > math.abs(state[VELOCITY].dy) then
+	if direction == EAST or direction == WEST then
 		animationSet = 1
-		position = state[POSITION].dx
+		majorPosition = state[POSITION].dx
 	else
 		animationSet = 2
-		position = state[POSITION].dy
+		majorPosition = state[POSITION].dy
 	end
 	
-	local chunks = math.ceil(position / imageAnimationOffset) - 1
+	local chunks = math.ceil(majorPosition / imageAnimationOffset) - 1
 	local animationFrame = (chunks % nAnimationFrames) + 1
 	
 	return images:getImage(animationFrame, animationSet)
